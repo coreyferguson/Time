@@ -1,8 +1,8 @@
 
 # Prompt
 PROMPT=$'
-%{$fg_bold[yellow]%}┌─ %~%{$reset_color%} %{$fg[white]%}% %D{@ %H:%M:%S} $(git_prompt_info)\
-%{$fg_bold[yellow]%}└─ $ %{$reset_color%}'
+┌─ %~ %{$fg[white]%}% %D{@ %H:%M:%S} $(git_prompt_info)\
+└─ $ '
 
 # Git indicators
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[white]%}git(%{$fg_bold[white]%}"
