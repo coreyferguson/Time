@@ -8,5 +8,10 @@ provider:
   region: us-west-2
 
 functions:
-  hello:
-    handler: handler.hello
+  status:
+    handler: src/status/statusLambda.status
+    events:
+      - http:
+          method: GET
+          path: ifttt/v1/status
+          cors: true
