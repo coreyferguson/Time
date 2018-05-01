@@ -8,6 +8,7 @@
     "watch": "./node_modules/.bin/mocha --recursive --watch test/spec"
   },
   "dependencies": {
+    "aws-sdk": "^2.230.1",
     "dev-env-lib": "^1.1.3"
   },
   "devDependencies": {

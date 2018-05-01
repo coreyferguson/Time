@@ -6,6 +6,7 @@ class StatusLambda {
   constructor(options) {
     options = options || {};
     this._controller = options.controller || controller;
+    this.status = this.status.bind(this);
   }
 
   status(event, context, callback) {
