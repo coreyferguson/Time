@@ -78,7 +78,6 @@ class OAuth {
         }
       }
     };
-
     return this.oauth.authorize(request, response, options);
   }
 

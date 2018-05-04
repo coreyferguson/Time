@@ -8,8 +8,6 @@ class AuthController {
   verifyIdToken(event) {
     const body = JSON.parse(event.body) || {};
     const idToken = body.idToken;
-    console.log('body:', event.body);
-    console.log('idToken:', idToken);
     return client.verifyIdToken({
       idToken,
       audience: clientId
