@@ -43,6 +43,7 @@ class OAuth {
           token.client = client;
           token.user = user;
           this.tokens[token.accessToken] = token;
+          return Promise.resolve(token);
         },
 
         saveAuthorizationCode: (code, client, user) => {
@@ -53,7 +54,7 @@ class OAuth {
         },
 
         revokeAuthorizationCode: (code) => {
-          if (this.codes[code]) {
+          if (this.codes[code.authorizationCode]) {
             delete this.codes[code];
             return Promise.resolve(true);
           } else {
