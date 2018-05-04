@@ -18,6 +18,7 @@
     "chai": "4.1.2",
     "chai-as-promised": "7.1.1",
     "chai-string": "1.4.0",
+    "local-dynamo-facade": "1.0.0",
     "mocha": "5.1.1",
     "os": "0.1.1",
     "sinon": "4.5.0",
