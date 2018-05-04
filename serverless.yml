@@ -15,3 +15,10 @@ functions:
           method: GET
           path: ifttt/v1/status
           cors: true
+  verifyIdToken:
+    handler: src/auth/authLambda.verifyIdToken
+    events:
+      - http:
+          method: POST
+          path: auth/verifyIdToken
+          cors: true
