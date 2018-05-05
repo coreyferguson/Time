@@ -1,0 +1,12 @@
+
+preprod:
+  api:
+    allowOrigins:
+      - https://time.overattribution.com
+      - https://local.time.overattribution.com:8080
+
+test:
+  api:
+    allowOrigins:
+      - https://time-test.overattribution.com
+      - https://time-test2.overattribution.com:3000

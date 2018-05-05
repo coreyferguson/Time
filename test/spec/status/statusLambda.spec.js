@@ -1,6 +1,6 @@
 
 const { expect, sinon } = require('../../support/TestUtils');
-const { StatusLambda } = require('../../../src/status/statusLambda');
+const { StatusLambda } = require('../../../src/ifttt/statusLambda');
 const controller = require('./mockStatusController');
 
 describe('StatusLambda', () => {

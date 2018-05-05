@@ -1,5 +1,5 @@
 
-const controller = require('../../../src/status/statusController');
+const controller = require('../../../src/ifttt/statusController');
 const { expect, sinon } = require('../../support/TestUtils');
 
 describe('StatusController', () => {

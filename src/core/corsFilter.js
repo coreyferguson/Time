@@ -1,42 +1,36 @@
 
+const config = require('../config');
+
 class CorsFilter {
 
-  constructor() {
-    this.allowOrigins = [
-      'https://time.overattribution.com',
-      'https://local.time.overattribution.com:8080'
-    ];
+  process(event) {
+    console.info('CorsFilter.process');
+    return new Promise(resolve => {
+      const { request, response } = event;
+      let origin = this.getOrigin(request);
+      let allowedOrigin = this.getAllowedOrigin(origin);
+      response.headers = response.headers || {};
+      response.headers['Access-Control-Allow-Origin'] = allowedOrigin
+        || config.env.api.allowOrigins[0];
+      response.headers['Access-Control-Allow-Credentials'] = true;
+      response.headers['Access-Control-Allow-Headers'] = 'Content-Type';
+      resolve(true);
+    });
   }
 
-  getCorsHeaders(event) {
-    const headers = {};
-    let origin = this.getOrigin(event);
-    let allowedOrigin = this.getAllowedOrigin(origin);
-    headers['Access-Control-Allow-Origin'] = allowedOrigin
-      || this.allowOrigins[0];
-    headers['Access-Control-Allow-Credentials'] = true;
-    headers['Access-Control-Allow-Headers'] = 'Content-Type';
-    return headers;
-  }
-
-  getOrigin(event) {
+  getOrigin(request) {
     let origin;
-    if (event && event.headers) {
-      if (event.headers.origin) {
-        console.info('CorsFilter.getOrigin, event.headers.origin:', event.headers.origin);
-        origin = event.headers.origin;
-      } else if (event.headers.Origin) {
-        console.info('CorsFilter.getOrigin, event.headers.Origin:', event.headers.Origin);
-        origin = event.headers.Origin;
-      }
+    if (request && request.headers) {
+      if (request.headers.origin) origin = request.headers.origin;
+      else if (request.headers.Origin) origin = request.headers.Origin;
     }
     return origin;
   }
 
   getAllowedOrigin(origin) {
-    let allowedOrigin = this.allowOrigins[0];
+    let allowedOrigin = config.env.api.allowOrigins[0];
     if (!origin) return allowedOrigin;
-    this.allowOrigins.forEach(o => {
+    config.env.api.allowOrigins.forEach(o => {
       if (o == origin) allowedOrigin = o;
     });
     return allowedOrigin;
@@ -45,4 +39,3 @@ class CorsFilter {
 }
 
 module.exports = new CorsFilter();
-module.exports.CorsFilter = CorsFilter;
