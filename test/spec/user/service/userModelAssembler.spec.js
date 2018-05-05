@@ -13,14 +13,14 @@ describe('userModelAssembler unit tests', () => {
     const createdOn = new Date();
     const model = userModelAssembler.toModel({
       Item: {
-        id: { S: '881936187492941825' },
+        id: { S: 'idValue' },
         authMethod: { S: 'authMethodValue' },
         displayName: { S: 'displayNameValue' },
         profilePicture: { S: 'profilePictureValue' },
         createdOn: { S: createdOn.toISOString() }
       }
     });
-    expect(model.id).to.eql('881936187492941825');
+    expect(model.id).to.eql('idValue');
     expect(model.authMethod).to.eql('authMethodValue');
     expect(model.displayName).to.eql('displayNameValue');
     expect(model.profilePicture).to.eql('profilePictureValue');
@@ -35,14 +35,14 @@ describe('userModelAssembler unit tests', () => {
   it('assemble entity from model - all properties', () => {
     const createdOn = new Date();
     const entity = userModelAssembler.toEntity({
-      id: '881936187492941825',
+      id: 'idValue',
       authMethod: 'authMethodValue',
       displayName: 'displayNameValue',
       profilePicture: 'profilePictureValue',
       createdOn
     });
     expect(entity).to.eql({
-      id: { S: '881936187492941825' },
+      id: { S: 'idValue' },
       authMethod: { S: 'authMethodValue' },
       displayName: { S: 'displayNameValue' },
       profilePicture: { S: 'profilePictureValue' },
@@ -52,12 +52,12 @@ describe('userModelAssembler unit tests', () => {
 
   it('assemble entity from model - required properties', () => {
     const entity = userModelAssembler.toEntity({
-      id: '881936187492941825',
+      id: 'idValue',
       authMethod: 'authMethodValue',
       displayName: 'displayNameValue',
       profilePicture: 'profilePictureValue'
     });
-    expect(entity.id).to.eql({ S: '881936187492941825' });
+    expect(entity.id).to.eql({ S: 'idValue' });
     expect(entity.authMethod).to.eql({ S: 'authMethodValue' });
     expect(entity.displayName).to.eql({ S: 'displayNameValue' });
     expect(entity.profilePicture).to.eql({ S: 'profilePictureValue' });
@@ -67,20 +67,20 @@ describe('userModelAssembler unit tests', () => {
   it('assemble entity from model and existing entity', () => {
     const createdOn = new Date();
     const entity = userModelAssembler.toEntity({
-      id: '881936187492941825',
+      id: 'idValue',
       authMethod: 'authMethodValue',
       displayName: 'displayNameValue',
       profilePicture: 'profilePictureValue'
     }, {
       Item: {
-        id: { S: '881936187492941825' },
+        id: { S: 'idValue' },
         authMethod: { S: 'oldAuthMethodValue' },
         displayName: { S: 'oldDisplayNameValue' },
         profilePicture: { S: 'oldProfilePictureValue' },
         createdOn: { S: createdOn.toISOString() }
       }
     });
-    expect(entity.id).to.eql({ S: '881936187492941825' });
+    expect(entity.id).to.eql({ S: 'idValue' });
     expect(entity.authMethod).to.eql({ S: 'authMethodValue' });
     expect(entity.displayName).to.eql({ S: 'displayNameValue' });
     expect(entity.profilePicture).to.eql({ S: 'profilePictureValue' });

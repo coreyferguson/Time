@@ -22,7 +22,7 @@ class UserService {
     return this._userRepository.findOne(model.id).then(existingEntity => {
       const entity = this._userModelAssembler.toEntity(model, existingEntity);
       return this._userRepository.save(entity);
-    })
+    });
   }
 
   delete(id) {

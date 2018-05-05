@@ -25,10 +25,36 @@ functions:
 
 resources:
   Resources:
+    authorizationCodeTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.authorizationCodeTableName}
+        AttributeDefinitions:
+          - AttributeName: authorizationCode
+            AttributeType: S
+        KeySchema:
+          - AttributeName: authorizationCode
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     usersTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.usersTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    clientTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.clientTableName}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
