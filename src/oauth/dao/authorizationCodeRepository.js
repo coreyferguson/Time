@@ -44,7 +44,7 @@ class AuthorizationCodeRepository {
   }
 
   delete(authorizationCode) {
-    console.info(`AuthorizationCodeRepository.delete(userId): ${authorizationCode}`);
+    console.info(`AuthorizationCodeRepository.delete(authorizationCode): ${authorizationCode}`);
     return new Promise((resolve, reject) => {
       this._dynamodb.deleteItem({
         TableName: this._authorizationCodeTableName,

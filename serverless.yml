@@ -51,10 +51,10 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-    userTable:
+    clientTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.userTableName}
+        TableName: ${self:custom.clientTableName}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -64,10 +64,23 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-    clientTable:
+    sessionTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.clientTableName}
+        TableName: ${self:custom.sessionTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    userTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userTableName}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S

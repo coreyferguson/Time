@@ -14,7 +14,7 @@ describe('authorizationCodeService integration test', () => {
   const facade = new LocalDynamoFacade(
     path.join(__dirname, '../../../../serverless.yml')
   );
-  let dynamodb, authorizationCodeTableName, clientTableName;
+  let dynamodb, authorizationCodeTableName, clientTableName, userTableName;
   let sandbox = sinon.sandbox.create();
 
   before(function() {

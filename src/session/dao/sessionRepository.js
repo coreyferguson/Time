@@ -10,13 +10,13 @@ class SessionRepository {
     this._sessionTableName = options.sessionTableName || process.env.sessionTableName;
   }
 
-  findOne(session) {
-    console.info(`SessionRepository.findOne(session): ${session}`);
+  findOne(id) {
+    console.info(`SessionRepository.findOne(id): ${id}`);
     return new Promise((resolve, reject) => {
       this._dynamodb.getItem({
         TableName: this._sessionTableName,
         Key: {
-          session: { S: session }
+          id: { S: id }
         }
       }, (err, data) => {
         if (err) reject(err);
@@ -41,13 +41,13 @@ class SessionRepository {
     });
   }
 
-  delete(session) {
-    console.info(`SessionRepository.delete(userId): ${session}`);
+  delete(id) {
+    console.info(`SessionRepository.delete(id): ${id}`);
     return new Promise((resolve, reject) => {
       this._dynamodb.deleteItem({
         TableName: this._sessionTableName,
         Key: {
-          session: { S: session }
+          id: { S: id }
         }
       }, (err, data) => {
         if (err) reject(err);
