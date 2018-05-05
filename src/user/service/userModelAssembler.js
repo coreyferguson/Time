@@ -8,18 +8,24 @@ class UserModelAssembler {
     model.authMethod = entity.Item.authMethod.S;
     model.displayName = entity.Item.displayName.S;
     model.profilePicture = entity.Item.profilePicture.S;
-    model.createdOn = entity.Item.createdOn.S;
+    model.createdOn = new Date(entity.Item.createdOn.S);
     return model;
   }
 
-  toEntity(model) {
+  toEntity(model, existingEntity) {
     if (!model) return null;
-    const entity = {};
+    const entity = (existingEntity)
+      ? existingEntity.Item
+      : {};
     entity.id = { S: model.id };
     entity.authMethod = { S: model.authMethod };
     entity.displayName = { S: model.displayName };
     entity.profilePicture = { S: model.profilePicture };
-    entity.createdOn = { S: model.createdOn };
+    let createdOn;
+    if (existingEntity) createdOn = existingEntity.Item.createdOn;
+    else if (model.createdOn) createdOn = { S: model.createdOn.toISOString() };
+    else createdOn = { S: new Date().toISOString() };
+    entity.createdOn = createdOn;
     return entity;
   }
 

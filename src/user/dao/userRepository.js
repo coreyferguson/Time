@@ -10,14 +10,14 @@ class UserRepository {
     this._usersTableName = options.usersTableName || process.env.usersTableName;
   }
 
-  findOne(userId) {
-    console.info(`UserRepository.findOne(userId): ${userId}`);
+  findOne(id) {
+    console.info(`UserRepository.findOne(userId): ${id}`);
     return new Promise((resolve, reject) => {
       this._dynamodb.getItem({
         TableName: this._usersTableName,
         Key: {
           id: {
-            S: userId
+            S: id
           }
         }
       }, (err, data) => {
@@ -36,6 +36,23 @@ class UserRepository {
         TableName: this._usersTableName,
         Item: user,
         ReturnConsumedCapacity: 'TOTAL'
+      }, (err, data) => {
+        if (err) reject(err);
+        else resolve(data);
+      });
+    });
+  }
+
+  delete(id) {
+    console.info(`UserRepository.delete(userId): ${id}`);
+    return new Promise((resolve, reject) => {
+      this._dynamodb.deleteItem({
+        TableName: this._usersTableName,
+        Key: {
+          id: {
+            S: id
+          }
+        }
       }, (err, data) => {
         if (err) reject(err);
         else resolve(data);
