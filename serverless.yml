@@ -25,6 +25,19 @@ functions:
 
 resources:
   Resources:
+    accessTokenTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.accessTokenTableName}
+        AttributeDefinitions:
+          - AttributeName: accessToken
+            AttributeType: S
+        KeySchema:
+          - AttributeName: accessToken
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     authorizationCodeTable:
       Type: AWS::DynamoDB::Table
       Properties:
