@@ -9,7 +9,7 @@ provider:
 
 functions:
   status:
-    handler: src/status/statusLambda.status
+    handler: src/ifttt/statusLambda.status
     events:
       - http:
           method: GET
