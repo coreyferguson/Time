@@ -10,22 +10,22 @@ describe('userService integration test', () => {
   const facade = new LocalDynamoFacade(
     path.join(__dirname, '../../../../serverless.yml')
   );
-  let dynamodb, usersTableName;
+  let dynamodb, userTableName;
   let sandbox = sinon.sandbox.create();
 
   before(function() {
     this.timeout(5000);
     dynamodb = userRepository._dynamodb;
-    usersTableName = userRepository._usersTableName;
+    userTableName = userRepository._userTableName;
     let newDynamoDb = facade.start();
     userRepository._dynamodb = newDynamoDb;
-    userRepository._usersTableName = 'users-test';
-    return facade.createTable('usersTable', 'users-test');
+    userRepository._userTableName = 'user-test';
+    return facade.createTable('userTable', 'user-test');
   });
 
   after(() => {
     userRepository._dynamodb = dynamodb;
-    userRepository._usersTableName = usersTableName;
+    userRepository._userTableName = userTableName;
     facade.stop();
   });
 

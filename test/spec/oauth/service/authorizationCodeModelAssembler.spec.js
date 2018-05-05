@@ -16,7 +16,9 @@ describe('authorizationCodeModelAssembler unit tests', () => {
         authorizationCode: { S: 'authorizationCodeValue' },
         expiresAt: { S: expiresAt.toISOString() },
         redirectUri: { S: 'redirectUriValue' },
-        scope: { S: 'scopeValue' }
+        scope: { S: 'scopeValue' },
+        clientId: 'clientIdValue',
+        userId: 'userIdValue'
       }
     }, {
       id: 'clientIdValue'

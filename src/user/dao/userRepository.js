@@ -7,14 +7,14 @@ class UserRepository {
   constructor(options) {
     options = options || {};
     this._dynamodb = options.dynamodb || new AWS.DynamoDB();
-    this._usersTableName = options.usersTableName || process.env.usersTableName;
+    this._userTableName = options.userTableName || process.env.userTableName;
   }
 
   findOne(id) {
     console.info(`UserRepository.findOne(userId): ${id}`);
     return new Promise((resolve, reject) => {
       this._dynamodb.getItem({
-        TableName: this._usersTableName,
+        TableName: this._userTableName,
         Key: {
           id: {
             S: id
@@ -33,7 +33,7 @@ class UserRepository {
     console.info(`UserRepository.save(user): ${user.id}`);
     return new Promise((resolve, reject) => {
       this._dynamodb.putItem({
-        TableName: this._usersTableName,
+        TableName: this._userTableName,
         Item: user,
         ReturnConsumedCapacity: 'TOTAL'
       }, (err, data) => {
@@ -47,7 +47,7 @@ class UserRepository {
     console.info(`UserRepository.delete(userId): ${id}`);
     return new Promise((resolve, reject) => {
       this._dynamodb.deleteItem({
-        TableName: this._usersTableName,
+        TableName: this._userTableName,
         Key: {
           id: {
             S: id

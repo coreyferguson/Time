@@ -13,6 +13,7 @@ class ClientRepository {
   findOne(id) {
     console.info(`ClientRepository.findOne(id): ${id}`);
     return new Promise((resolve, reject) => {
+      debugger;
       this._dynamodb.getItem({
         TableName: this._clientTableName,
         Key: {
