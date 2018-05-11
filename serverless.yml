@@ -1,13 +1,34 @@
 
 service: time-api
 
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  accessTokenTableName: accessToken-${self:custom.stage}
+  authorizationCodeTableName: authorizationCode-${self:custom.stage}
+  clientTableName: client-${self:custom.stage}
+  sessionTableName: session-${self:custom.stage}
+  userTableName: user-${self:custom.stage}
+
 provider:
   name: aws
   runtime: nodejs6.10
-  stage: dev
+  stage: prod
   region: us-west-2
+  environment:
+    accessTokenTableName: ${self:custom.accessTokenTableName}
+    authorizationCodeTableName: ${self:custom.authorizationCodeTableName}
+    clientTableName: ${self:custom.clientTableName}
+    sessionTableName: ${self:custom.sessionTableName}
+    userTableName: ${self:custom.userTableName}
 
 functions:
+  session:
+    handler: src/session/controller/sessionLambda.getSession
+    events:
+      - http:
+          method: GET
+          path: session
+          cors: true
   status:
     handler: src/ifttt/statusLambda.status
     events:

@@ -21,14 +21,18 @@ describe('corsFilter unit tests', () => {
   });
 
   it('does not overwrite any existing headers', () => {
+    const request = {
+      event: {
+        headers: {
+          origin: 'https://time-test.overattribution.com'
+        }
+      }
+    };
     const response = {
       statusCode: 200,
       headers: { 'existingHeaderLabel': 'existingHeaderValue' }
     };
-    return corsFilter.process({
-      request: { headers: { origin: 'https://time-test.overattribution.com' } },
-      response
-    }).then(shouldContinue => {
+    return corsFilter({ request, response }).then(shouldContinue => {
       expect(shouldContinue).to.be.true;
       expect(response).to.eql({
         statusCode: 200,
@@ -41,13 +45,13 @@ describe('corsFilter unit tests', () => {
   });
 
   it('is not an allowed origin', () => {
-    const event = {
-      request: { headers: { origin: 'https://notmydomain.com' } },
+    const data = {
+      request: { event: { headers: { origin: 'https://notmydomain.com' } } },
       response: { statusCode: 200 }
     };
-    return corsFilter.process(event).then(shouldContinue => {
-      expect(shouldContinue).to.be.true;
-      expect(event.response).to.eql({
+    return corsFilter(data).then(shouldContinue => {
+      expect(shouldContinue).to.be.false;
+      expect(data.response).to.eql({
         statusCode: 200,
         headers: defaultHeaders
       });
@@ -56,10 +60,10 @@ describe('corsFilter unit tests', () => {
 
   it('is default origin', () => {
     const event = {
-      request: { headers: { origin: 'https://time-test.overattribution.com' } },
+      request: { event: { headers: { origin: 'https://time-test.overattribution.com' } } },
       response: { statusCode: 200 }
     };
-    return corsFilter.process(event).then(shouldContinue => {
+    return corsFilter(event).then(shouldContinue => {
       expect(shouldContinue).to.be.true;
       expect(event.response).to.eql({
         statusCode: 200,
@@ -70,10 +74,10 @@ describe('corsFilter unit tests', () => {
 
   it('is alternative origin', () => {
     const event = {
-      request: { headers: { origin: 'https://time-test2.overattribution.com:3000' } },
+      request: { event: { headers: { origin: 'https://time-test2.overattribution.com:3000' } } },
       response: { statusCode: 200 }
     };
-    return corsFilter.process(event).then(shouldContinue => {
+    return corsFilter(event).then(shouldContinue => {
       expect(shouldContinue).to.be.true;
       expect(event.response).to.eql({
         statusCode: 200,
@@ -91,10 +95,10 @@ describe('corsFilter unit tests', () => {
 
   it('header is `Origin` with uppercase O', () => {
     const event = {
-      request: { headers: { Origin: 'https://time-test.overattribution.com' } },
+      request: { event: { headers: { Origin: 'https://time-test.overattribution.com' } } },
       response: { statusCode: 200 }
     };
-    return corsFilter.process(event).then(shouldContinue => {
+    return corsFilter(event).then(shouldContinue => {
       expect(shouldContinue).to.be.true;
       expect(event.response).to.eql({
         statusCode: 200,
