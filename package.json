@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "debug": "stage=test ./node_modules/.bin/mocha --recursive --watch --inspect --debug-brk test/spec",
+    "deploy": "node_modules/.bin/sls",
     "test": "stage=test ./node_modules/.bin/mocha --recursive test/spec",
     "watch": "stage=test ./node_modules/.bin/mocha --recursive --watch test/spec"
   },
@@ -23,6 +24,7 @@
     "local-dynamo-facade": "1.0.1",
     "mocha": "5.1.1",
     "os": "0.1.1",
+    "serverless": "1.27.3",
     "sinon": "4.5.0",
     "sinon-chai": "3.0.0"
   },
