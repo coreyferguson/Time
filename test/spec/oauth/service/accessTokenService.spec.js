@@ -45,7 +45,8 @@ describe('accessTokenService integration test', () => {
     }).then(() => {
       return userService.save({
         id: 'userIdValue',
-        authMethod: 'authMethodValue',
+        externalAuthMethod: 'externalAuthMethodValue',
+        externalAuthId: 'externalAuthIdValue',
         displayName: 'displayNameValue',
         profilePicture: 'profilePictureValue'
       });

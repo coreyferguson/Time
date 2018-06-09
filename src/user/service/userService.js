@@ -30,6 +30,16 @@ class UserService {
     return this._userRepository.delete(id);
   }
 
+  findByExternalIds(externalAuthMethod, externalAuthId) {
+    console.info(`UserService.findByExternalIds(externalAuthMethod, externalAuthId): ${externalAuthMethod}, ${externalAuthId}`);
+    return this._userRepository.findByExternalIds(externalAuthMethod, externalAuthId).then(entity => {
+      entity = (entity.Items.length > 0)
+        ? { Item: entity.Items[0] }
+        : null;
+      return this._userModelAssembler.toModel(entity);
+    });
+  }
+
 }
 
 module.exports = new UserService();

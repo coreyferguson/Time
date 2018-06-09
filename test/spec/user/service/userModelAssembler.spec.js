@@ -14,14 +14,16 @@ describe('userModelAssembler unit tests', () => {
     const model = userModelAssembler.toModel({
       Item: {
         id: { S: 'idValue' },
-        authMethod: { S: 'authMethodValue' },
+        externalAuthMethod: { S: 'externalAuthMethodValue' },
+        externalAuthId: { S: 'externalAuthIdValue' },
         displayName: { S: 'displayNameValue' },
         profilePicture: { S: 'profilePictureValue' },
         createdOn: { S: createdOn.toISOString() }
       }
     });
     expect(model.id).to.eql('idValue');
-    expect(model.authMethod).to.eql('authMethodValue');
+    expect(model.externalAuthMethod).to.eql('externalAuthMethodValue');
+    expect(model.externalAuthId).to.eql('externalAuthIdValue');
     expect(model.displayName).to.eql('displayNameValue');
     expect(model.profilePicture).to.eql('profilePictureValue');
     expect(model.createdOn.toISOString()).to.eql(createdOn.toISOString());
@@ -36,14 +38,16 @@ describe('userModelAssembler unit tests', () => {
     const createdOn = new Date();
     const entity = userModelAssembler.toEntity({
       id: 'idValue',
-      authMethod: 'authMethodValue',
+      externalAuthMethod: 'externalAuthMethodValue',
+      externalAuthId: 'externalAuthIdValue',
       displayName: 'displayNameValue',
       profilePicture: 'profilePictureValue',
       createdOn
     });
     expect(entity).to.eql({
       id: { S: 'idValue' },
-      authMethod: { S: 'authMethodValue' },
+      externalAuthMethod: { S: 'externalAuthMethodValue' },
+      externalAuthId: { S: 'externalAuthIdValue' },
       displayName: { S: 'displayNameValue' },
       profilePicture: { S: 'profilePictureValue' },
       createdOn: { S: createdOn.toISOString() }
@@ -53,12 +57,14 @@ describe('userModelAssembler unit tests', () => {
   it('assemble entity from model - required properties', () => {
     const entity = userModelAssembler.toEntity({
       id: 'idValue',
-      authMethod: 'authMethodValue',
+      externalAuthMethod: 'externalAuthMethodValue',
+      externalAuthId: 'externalAuthIdValue',
       displayName: 'displayNameValue',
       profilePicture: 'profilePictureValue'
     });
     expect(entity.id).to.eql({ S: 'idValue' });
-    expect(entity.authMethod).to.eql({ S: 'authMethodValue' });
+    expect(entity.externalAuthMethod).to.eql({ S: 'externalAuthMethodValue' });
+    expect(entity.externalAuthId).to.eql({ S: 'externalAuthIdValue' });
     expect(entity.displayName).to.eql({ S: 'displayNameValue' });
     expect(entity.profilePicture).to.eql({ S: 'profilePictureValue' });
     expect(entity.createdOn).to.not.be.null;
@@ -68,20 +74,23 @@ describe('userModelAssembler unit tests', () => {
     const createdOn = new Date();
     const entity = userModelAssembler.toEntity({
       id: 'idValue',
-      authMethod: 'authMethodValue',
+      externalAuthMethod: 'externalAuthMethodValue',
+      externalAuthId: 'externalAuthIdValue',
       displayName: 'displayNameValue',
       profilePicture: 'profilePictureValue'
     }, {
       Item: {
         id: { S: 'idValue' },
-        authMethod: { S: 'oldAuthMethodValue' },
+        externalAuthMethod: { S: 'oldExternalAuthMethodValue' },
+        externalAuthId: { S: 'oldExternalAuthIdValue' },
         displayName: { S: 'oldDisplayNameValue' },
         profilePicture: { S: 'oldProfilePictureValue' },
         createdOn: { S: createdOn.toISOString() }
       }
     });
     expect(entity.id).to.eql({ S: 'idValue' });
-    expect(entity.authMethod).to.eql({ S: 'authMethodValue' });
+    expect(entity.externalAuthMethod).to.eql({ S: 'externalAuthMethodValue' });
+    expect(entity.externalAuthId).to.eql({ S: 'externalAuthIdValue' });
     expect(entity.displayName).to.eql({ S: 'displayNameValue' });
     expect(entity.profilePicture).to.eql({ S: 'profilePictureValue' });
     expect(entity.createdOn.S).to.eql(createdOn.toISOString());

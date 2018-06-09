@@ -5,7 +5,8 @@ class UserModelAssembler {
     if (!entity) return null;
     const model = {};
     model.id = entity.Item.id.S;
-    model.authMethod = entity.Item.authMethod.S;
+    model.externalAuthMethod = entity.Item.externalAuthMethod.S;
+    model.externalAuthId = entity.Item.externalAuthId.S;
     model.displayName = entity.Item.displayName.S;
     model.profilePicture = entity.Item.profilePicture.S;
     model.createdOn = new Date(entity.Item.createdOn.S);
@@ -18,7 +19,8 @@ class UserModelAssembler {
       ? existingEntity.Item
       : {};
     entity.id = { S: model.id };
-    entity.authMethod = { S: model.authMethod };
+    entity.externalAuthMethod = { S: model.externalAuthMethod };
+    entity.externalAuthId = { S: model.externalAuthId };
     entity.displayName = { S: model.displayName };
     entity.profilePicture = { S: model.profilePicture };
     let createdOn;

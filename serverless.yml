@@ -6,25 +6,39 @@ plugins:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  accessTokenTableName: accessToken-${self:custom.stage}
-  authorizationCodeTableName: authorizationCode-${self:custom.stage}
-  clientTableName: client-${self:custom.stage}
-  sessionTableName: session-${self:custom.stage}
-  userTableName: user-${self:custom.stage}
+  accessTokenTableName: time-accessToken-${self:custom.stage}
+  authorizationCodeTableName: time-authorizationCode-${self:custom.stage}
+  clientTableName: time-client-${self:custom.stage}
+  sessionTableName: time-session-${self:custom.stage}
+  userTableName: time-user-${self:custom.stage}
 
 provider:
   name: aws
   runtime: nodejs6.10
-  stage: prod
+  stage: dev
   region: us-west-2
   environment:
+    stage: ${self:custom.stage}
     accessTokenTableName: ${self:custom.accessTokenTableName}
     authorizationCodeTableName: ${self:custom.authorizationCodeTableName}
     clientTableName: ${self:custom.clientTableName}
     sessionTableName: ${self:custom.sessionTableName}
     userTableName: ${self:custom.userTableName}
   environmentSecrets:
-    MY_SUPER_SECRET: /time-api/${self:custom.stage}/MY_SUPER_SECRET
+    firebaseAdminProjectId: /time-api/${self:custom.stage}/firebaseAdminProjectId
+    firebaseAdminClientEmail: /time-api/${self:custom.stage}/firebaseAdminClientEmail
+    firebaseAdminPrivateKey: /time-api/${self:custom.stage}/firebaseAdminPrivateKey
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-west-2:*:*"
+
 
 functions:
   session:
@@ -34,19 +48,26 @@ functions:
           method: GET
           path: session
           cors: true
+  verifyIdToken:
+    handler: src/session/controller/sessionLambda.verifyIdToken
+    events:
+      - http:
+          method: POST
+          path: session/verifyIdToken
+          cors: true
+  verifyIdTokenPreflight:
+    handler: src/session/controller/sessionLambda.preflight
+    events:
+      - http:
+          method: OPTIONS
+          path: session/verifyIdToken
+
   status:
     handler: src/ifttt/statusLambda.status
     events:
       - http:
           method: GET
           path: ifttt/v1/status
-          cors: true
-  verifyIdToken:
-    handler: src/auth/authLambda.verifyIdToken
-    events:
-      - http:
-          method: POST
-          path: session/verifyIdToken
           cors: true
 
 resources:
@@ -110,9 +131,25 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: externalAuthMethod
+            AttributeType: S
+          - AttributeName: externalAuthId
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: ExternalAuthIndex
+            KeySchema:
+              - AttributeName: externalAuthMethod
+                KeyType: HASH
+              - AttributeName: externalAuthId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

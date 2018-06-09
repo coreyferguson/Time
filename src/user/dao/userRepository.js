@@ -29,6 +29,24 @@ class UserRepository {
     });
   }
 
+  findByExternalIds(externalAuthMethod, externalAuthId) {
+    console.info(`UserRepository.findByExternalIds(externalAuthMethod, externalAuthId): ${externalAuthMethod}, ${externalAuthId}`);
+    return new Promise((resolve, reject) => {
+      this._dynamodb.query({
+        TableName: this._userTableName,
+        IndexName: 'ExternalAuthIndex',
+        KeyConditionExpression: 'externalAuthMethod = :v_externalAuthMethod AND externalAuthId = :v_externalAuthId',
+        ExpressionAttributeValues: {
+          ':v_externalAuthMethod': { 'S': externalAuthMethod },
+          ':v_externalAuthId': { 'S': externalAuthId }
+        }
+      }, (err, data) => {
+        if (err) reject(err);
+        else resolve(data);
+      });
+    });
+  }
+
   save(user) {
     console.info(`UserRepository.save(user): ${user.id}`);
     return new Promise((resolve, reject) => {

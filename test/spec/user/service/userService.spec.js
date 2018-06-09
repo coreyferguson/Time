@@ -45,14 +45,16 @@ describe('userService integration test', () => {
     const createdDate = new Date();
     return userService.save({
       id: '1234',
-      authMethod: 'authMethodValue',
+      externalAuthId: 'externalAuthIdValue',
+      externalAuthMethod: 'externalAuthMethodValue',
       displayName: 'displayNameValue',
       profilePicture: 'profilePictureValue',
       createdOn: new Date()
     }).then(() => {
       return userService.findOne('1234').then(user => {
         expect(user.id).to.eql('1234');
-        expect(user.authMethod).to.eql('authMethodValue');
+        expect(user.externalAuthId).to.eql('externalAuthIdValue');
+        expect(user.externalAuthMethod).to.eql('externalAuthMethodValue');
         expect(user.displayName).to.eql('displayNameValue');
         expect(user.profilePicture).to.eql('profilePictureValue');
         expect(user.createdOn.toISOString()).to.eql(createdDate.toISOString());
@@ -70,25 +72,55 @@ describe('userService integration test', () => {
     const createdOn = new Date();
     return userService.save({
       id: '1234',
-      authMethod: 'oldAuthMethodValue',
+      externalAuthId: 'oldExternalAuthIdValue',
+      externalAuthMethod: 'oldExternalAuthMethodValue',
       displayName: 'oldDisplayNameValue',
       profilePicture: 'oldProfilePictureValue',
       createdOn
     }).then(() => {
       return userService.save({
         id: '1234',
-        authMethod: 'newAuthMethodValue',
+        externalAuthId: 'newExternalAuthIdValue',
+        externalAuthMethod: 'newExternalAuthMethodValue',
         displayName: 'newDisplayNameValue',
         profilePicture: 'newProfilePictureValue'
       });
     }).then(() => {
       return userService.findOne('1234').then(user => {
         expect(user.id).to.eql('1234');
-        expect(user.authMethod).to.eql('newAuthMethodValue');
+        expect(user.externalAuthId).to.eql('newExternalAuthIdValue');
+        expect(user.externalAuthMethod).to.eql('newExternalAuthMethodValue');
         expect(user.displayName).to.eql('newDisplayNameValue');
         expect(user.profilePicture).to.eql('newProfilePictureValue');
         expect(user.createdOn.toISOString()).to.eql(createdOn.toISOString());
       });
+    });
+  });
+
+  it('findByExternalIds', () => {
+    const createdOn = new Date();
+    return userService.save({
+      id: '1234',
+      externalAuthMethod: 'externalAuthMethodValue',
+      externalAuthId: 'externalAuthIdValue',
+      displayName: 'displayNameValue',
+      profilePicture: 'profilePictureValue',
+      createdOn
+    }).then(() => {
+      return userService.findByExternalIds(
+        'externalAuthMethodValue', 'externalAuthIdValue');
+    }).then(user => {
+      expect(user.id).to.eql('1234');
+      expect(user.externalAuthMethod).to.eql('externalAuthMethodValue');
+      expect(user.externalAuthId).to.eql('externalAuthIdValue');
+      expect(user.displayName).to.eql('displayNameValue');
+      expect(user.profilePicture).to.eql('profilePictureValue');
+    }).then(() => {
+      // incomplete data returns nothing
+      return expect(Promise.all([
+        userService.findByExternalIds('externalAuthMethodValue', 'nothing'),
+        userService.findByExternalIds('nothing', 'externalAuthIdValue'),
+      ])).to.eventually.eql([null, null]);
     });
   });
 

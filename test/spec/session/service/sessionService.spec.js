@@ -32,7 +32,8 @@ describe('sessionService integration test', () => {
     ]).then(() => {
       return userService.save({
         id: 'userIdValue',
-        authMethod: 'authMethodValue',
+        externalAuthId: 'externalAuthIdValue',
+        externalAuthMethod: 'externalAuthMethodValue',
         displayName: 'displayNameValue',
         profilePicture: 'profilePictureValue'
       });
