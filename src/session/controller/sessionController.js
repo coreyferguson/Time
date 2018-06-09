@@ -16,13 +16,15 @@ class SessionController {
     const cookieUserId = cookies.userId;
     const cookieSessionId = cookies.sessionId;
     if (!cookieSessionId) {
-      data.response.statusCode = 401;
+      data.response.statusCode = 200;
+      data.response.body = {};
       return Promise.resolve();
     }
     return this._sessionService.findOne(cookieSessionId).then(session => {
       // validate session exists and session.user.id matches given cookies
       if (!session || session.user.id !== cookieUserId) {
-        data.response.statusCode = 401;
+        data.response.statusCode = 200;
+        data.response.body = {};
       } else {
         // user is authenticated, return user information
         data.response.statusCode = 200;

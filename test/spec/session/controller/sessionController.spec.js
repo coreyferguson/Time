@@ -25,7 +25,8 @@ describe('sessionController unit tests', () => {
       response: {}
     };
     return controller.getSession(data).then(res => {
-      expect(data.response.statusCode).to.eql(401);
+      expect(data.response.statusCode).to.eql(200);
+      expect(data.response.body).to.eql({});
       expect(mockSessionService.findOne).to.not.have.been.called;
     });
   });
@@ -47,7 +48,8 @@ describe('sessionController unit tests', () => {
       response: {}
     };
     return controller.getSession(data).then(res => {
-      expect(data.response.statusCode).to.eql(401);
+      expect(data.response.statusCode).to.eql(200);
+      expect(data.response.body).to.eql({});
     });
   });
 

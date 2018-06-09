@@ -1,6 +1,9 @@
 
 service: time-api
 
+plugins:
+  - serverless-secrets
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   accessTokenTableName: accessToken-${self:custom.stage}
@@ -20,6 +23,8 @@ provider:
     clientTableName: ${self:custom.clientTableName}
     sessionTableName: ${self:custom.sessionTableName}
     userTableName: ${self:custom.userTableName}
+  environmentSecrets:
+    MY_SUPER_SECRET: /time-api/${self:custom.stage}/MY_SUPER_SECRET
 
 functions:
   session:
@@ -41,7 +46,7 @@ functions:
     events:
       - http:
           method: POST
-          path: auth/verifyIdToken
+          path: session/verifyIdToken
           cors: true
 
 resources:

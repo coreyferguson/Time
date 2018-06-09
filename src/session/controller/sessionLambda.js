@@ -1,6 +1,7 @@
 
 const filterChain = require('../../core/filterChain');
 const controller = require('./sessionController');
+const secretsClient = require('serverless-secrets/client');
 
 class SessionLambda {
 
@@ -8,6 +9,7 @@ class SessionLambda {
     options = options || {};
     this._filterChain = options.filterChain || filterChain;
     this._controller = options.controller || controller;
+    this._secretsClient = options.secretsClient || secretsClient;
     this.getSession = this.getSession.bind(this);
   }
 
@@ -16,7 +18,10 @@ class SessionLambda {
       request: { event, context },
       response: {}
     };
-    return this._filterChain.wrapInChain(data, this._controller.getSession).then(() => {
+    return this._secretsClient.load().then(() => {
+      console.log('MY_SUPER_SECRET:', process.env.MY_SUPER_SECRET)
+      return this._filterChain.wrapInChain(data, this._controller.getSession);
+    }).then(() => {
       if (data.response.body)
         data.response.body = JSON.stringify(data.response.body);
       callback(null, data.response);
