@@ -1,6 +1,6 @@
 
 const path = require('path');
-const ymlParser = require('../core/ymlParser');
+const environmentConfig = require('./environment-config.yml');
 
 /**
  * Properties:
@@ -11,10 +11,9 @@ class Config {
 
   constructor(options) {
     options = options || {};
-    this._ymlParser = options.ymlParser || ymlParser;
     this._stage = options.stage || process.env.stage;
     // layer environment config on top of default
-    this.all = this._ymlParser.parse(path.join(__dirname, './environment-config.yml'));
+    this.all = environmentConfig;
     this.test = this.all.test;
     this.preprod = this.all.preprod;
     this.env = Object.assign({}, this.preprod, this.all[this._stage]);

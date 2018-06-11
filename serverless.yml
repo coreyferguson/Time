@@ -3,6 +3,7 @@ service: time-api
 
 plugins:
   - serverless-secrets
+  - serverless-webpack
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -11,6 +12,10 @@ custom:
   clientTableName: time-client-${self:custom.stage}
   sessionTableName: time-session-${self:custom.stage}
   userTableName: time-user-${self:custom.stage}
+  webpack:
+    includeModules:
+      forceExclude:
+        - aws-sdk
 
 provider:
   name: aws

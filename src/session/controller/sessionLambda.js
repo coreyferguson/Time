@@ -4,6 +4,8 @@ const controller = require('./sessionController');
 const secretsClient = require('serverless-secrets/client');
 const firebase = require('firebase-admin');
 
+secretsClient.init(require('../../../.serverless-secrets.json'));
+
 class SessionLambda {
 
   constructor(options) {
