@@ -20,6 +20,10 @@ describe('sessionController unit tests', () => {
     });
   });
 
+  beforeEach(() => {
+    sandbox.stub(controller, '_configureFirebase').returns(Promise.resolve());
+  })
+
   afterEach(() => sandbox.restore());
 
   it('no existing session', () => {

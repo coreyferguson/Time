@@ -4,12 +4,11 @@ const clientRepository = require('../../../../src/oauth/dao/clientRepository');
 const { expect, sinon } = require('../../../support/TestUtils');
 const LocalDynamoFacade = require('local-dynamo-facade');
 const path = require('path');
+const serverlessConfig = require('../../../../serverless.yml');
 
 describe('clientService integration test', () => {
 
-  const facade = new LocalDynamoFacade(
-    path.join(__dirname, '../../../../serverless.yml')
-  );
+  const facade = new LocalDynamoFacade(serverlessConfig);
   let dynamodb, clientTableName;
   let sandbox = sinon.sandbox.create();
 

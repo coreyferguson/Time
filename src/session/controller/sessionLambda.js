@@ -2,7 +2,6 @@
 const filterChain = require('../../core/filterChain');
 const controller = require('./sessionController');
 const secretsClient = require('serverless-secrets/client');
-const firebase = require('firebase-admin');
 
 secretsClient.init(require('../../../.serverless-secrets.json'));
 
@@ -12,7 +11,6 @@ class SessionLambda {
     options = options || {};
     this._filterChain = options.filterChain || filterChain;
     this._controller = options.controller || controller;
-    this._firebase = options.firebase || firebase;
     this._secretsClient = options.secretsClient || secretsClient;
     this._secretsPromise = null;
     this.getSession = this.getSession.bind(this);
@@ -25,7 +23,7 @@ class SessionLambda {
       request: { event, context },
       response: {}
     };
-    return this.configureFirebase().then(() => {
+    return this._configureSecrets().then(() => {
       return this._filterChain.wrapInChain(data, this._controller.getSession);
     }).then(() => {
       if (data.response.body)
@@ -48,7 +46,7 @@ class SessionLambda {
       response: {}
     };
     if (event && event.body) event.body = JSON.parse(event.body);
-    return this.configureFirebase().then(() => {
+    return this._configureSecrets().then(() => {
       return this._filterChain.wrapInChain(data, this._controller.verifyIdToken);
     }).then(() => {
       if (data.response.body)
@@ -85,20 +83,10 @@ class SessionLambda {
     });
   }
 
-  configureFirebase() {
+  _configureSecrets() {
     if (this._secretsPromise) return this._secretsPromise;
     this._secretsPromise = this._secretsClient.load();
-    return this._secretsPromise.then(() => {
-      const projectId = process.env['firebaseAdminProjectId'];
-      const clientEmail = process.env['firebaseAdminClientEmail'];
-      const privateKey = process.env['firebaseAdminPrivateKey'];
-      console.log('credentials:', { projectId, clientEmail, privateKey });
-      this._firebase.initializeApp({
-        credential: firebase.credential.cert(
-          { projectId, clientEmail, privateKey }
-        )
-      });
-    });
+    return this._secretsPromise;
   }
 
 }
