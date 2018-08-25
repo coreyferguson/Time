@@ -33,6 +33,7 @@ provider:
     firebaseAdminProjectId: /time-api/${self:custom.stage}/firebaseAdminProjectId
     firebaseAdminClientEmail: /time-api/${self:custom.stage}/firebaseAdminClientEmail
     firebaseAdminPrivateKey: /time-api/${self:custom.stage}/firebaseAdminPrivateKey
+    AUTH0_TIME_CERTIFICATE: /time-api/${self:custom.stage}/AUTH0_TIME_CERTIFICATE
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -43,7 +44,6 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:us-west-2:*:*"
-
 
 functions:
   session:
@@ -73,6 +73,13 @@ functions:
       - http:
           method: GET
           path: ifttt/v1/status
+          cors: true
+  userInfo:
+    handler: src/ifttt/iftttLambda.userInfo
+    events:
+      - http:
+          method: GET
+          path: ifttt/v1/user/info
           cors: true
 
 resources:
