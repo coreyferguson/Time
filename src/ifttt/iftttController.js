@@ -1,27 +1,21 @@
 
-var jwt = require('jsonwebtoken');
+const axios = require('axios');
 
 class IftttController {
 
   userInfo(event) {
-    console.log(JSON.stringify(event));
-    return new Promise(resolve => {
-      if (!event || !event.headers['Authorization']) {
-        resolve({ statusCode: 401 });
-        return;
-      }
-      const token = event.headers['Authorization'].slice(7);
-      const decoded = jwt.verify(
-        token,
-        process.env['AUTH0_TIME_CERTIFICATE'],
-        {
-          algorithms: ['RS256'],
-          audience: 'https://time.overattribution.com',
-          issuer: 'https://overattribution.auth0.com/',
-          ignoreExpiration: false
+    const endpoint = 'https://overattribution.auth0.com/userinfo';
+    const query = '?access_token=' + event.headers['Authorization'].slice(7);
+    return axios.get(endpoint + query).then(res => {
+      return {
+        statusCode: 200,
+        body: {
+          data: {
+            id: res.data.sub,
+            name: res.data.name
+          }
         }
-      );
-      console.log('2: ', JSON.stringify(decoded));
+      };
     });
   }
 
