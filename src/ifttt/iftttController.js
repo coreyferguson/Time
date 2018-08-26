@@ -19,6 +19,15 @@ class IftttController {
     });
   }
 
+  status(event) {
+    const iftttServiceKey = process.env.IFTTT_SERVICE_KEY;
+    if (iftttServiceKey !== event.headers['Ifttt-Channel-Key'] ||
+        iftttServiceKey !== event.headers['Ifttt-Service-Key']) {
+      return Promise.resolve({ statusCode: 401 });
+    }
+    return Promise.resolve({ statusCode: 200 });
+  }
+
 }
 
 module.exports = new IftttController();

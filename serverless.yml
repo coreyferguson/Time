@@ -34,6 +34,7 @@ provider:
     firebaseAdminClientEmail: /time-api/${self:custom.stage}/firebaseAdminClientEmail
     firebaseAdminPrivateKey: /time-api/${self:custom.stage}/firebaseAdminPrivateKey
     AUTH0_TIME_CERTIFICATE: /time-api/${self:custom.stage}/AUTH0_TIME_CERTIFICATE
+    IFTTT_SERVICE_KEY: /time-api/${self:custom.stage}/IFTTT_SERVICE_KEY
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -68,7 +69,7 @@ functions:
           path: session/verifyIdToken
 
   status:
-    handler: src/ifttt/statusLambda.status
+    handler: src/ifttt/iftttLambda.status
     events:
       - http:
           method: GET
