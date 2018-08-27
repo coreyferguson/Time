@@ -7,11 +7,6 @@ plugins:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  accessTokenTableName: time-accessToken-${self:custom.stage}
-  authorizationCodeTableName: time-authorizationCode-${self:custom.stage}
-  clientTableName: time-client-${self:custom.stage}
-  sessionTableName: time-session-${self:custom.stage}
-  userTableName: time-user-${self:custom.stage}
   webpack:
     includeModules:
       forceExclude:
@@ -24,15 +19,7 @@ provider:
   region: us-west-2
   environment:
     stage: ${self:custom.stage}
-    accessTokenTableName: ${self:custom.accessTokenTableName}
-    authorizationCodeTableName: ${self:custom.authorizationCodeTableName}
-    clientTableName: ${self:custom.clientTableName}
-    sessionTableName: ${self:custom.sessionTableName}
-    userTableName: ${self:custom.userTableName}
   environmentSecrets:
-    firebaseAdminProjectId: /time-api/${self:custom.stage}/firebaseAdminProjectId
-    firebaseAdminClientEmail: /time-api/${self:custom.stage}/firebaseAdminClientEmail
-    firebaseAdminPrivateKey: /time-api/${self:custom.stage}/firebaseAdminPrivateKey
     AUTH0_TIME_CERTIFICATE: /time-api/${self:custom.stage}/AUTH0_TIME_CERTIFICATE
     IFTTT_SERVICE_KEY: /time-api/${self:custom.stage}/IFTTT_SERVICE_KEY
   iamRoleStatements:
@@ -47,27 +34,6 @@ provider:
       Resource: "arn:aws:dynamodb:us-west-2:*:*"
 
 functions:
-  session:
-    handler: src/session/controller/sessionLambda.getSession
-    events:
-      - http:
-          method: GET
-          path: session
-          cors: true
-  verifyIdToken:
-    handler: src/session/controller/sessionLambda.verifyIdToken
-    events:
-      - http:
-          method: POST
-          path: session/verifyIdToken
-          cors: true
-  verifyIdTokenPreflight:
-    handler: src/session/controller/sessionLambda.preflight
-    events:
-      - http:
-          method: OPTIONS
-          path: session/verifyIdToken
-
   status:
     handler: src/ifttt/iftttLambda.status
     events:
@@ -82,87 +48,10 @@ functions:
           method: GET
           path: ifttt/v1/user/info
           cors: true
-
-resources:
-  Resources:
-    accessTokenTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.accessTokenTableName}
-        AttributeDefinitions:
-          - AttributeName: accessToken
-            AttributeType: S
-        KeySchema:
-          - AttributeName: accessToken
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-    authorizationCodeTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.authorizationCodeTableName}
-        AttributeDefinitions:
-          - AttributeName: authorizationCode
-            AttributeType: S
-        KeySchema:
-          - AttributeName: authorizationCode
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-    clientTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.clientTableName}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-    sessionTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.sessionTableName}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-    userTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.userTableName}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-          - AttributeName: externalAuthMethod
-            AttributeType: S
-          - AttributeName: externalAuthId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        GlobalSecondaryIndexes:
-          - IndexName: ExternalAuthIndex
-            KeySchema:
-              - AttributeName: externalAuthMethod
-                KeyType: HASH
-              - AttributeName: externalAuthId
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+  timerStart:
+    handler: src/ifttt/iftttLambda.timerStart
+    events:
+      - http:
+          method: POST
+          path: ifttt/v1/actions/timer_start
+          cors: true

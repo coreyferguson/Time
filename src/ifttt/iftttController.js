@@ -1,5 +1,6 @@
 
 const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
 class IftttController {
 
@@ -20,12 +21,37 @@ class IftttController {
   }
 
   status(event) {
-    const iftttServiceKey = process.env.IFTTT_SERVICE_KEY;
+    const iftttServiceKey = this.getIftttServiceKey();
     if (iftttServiceKey !== event.headers['Ifttt-Channel-Key'] ||
         iftttServiceKey !== event.headers['Ifttt-Service-Key']) {
       return Promise.resolve({ statusCode: 401 });
     }
     return Promise.resolve({ statusCode: 200 });
+  }
+
+  timerStart(event) {
+    console.log(JSON.stringify(event));
+    const token = event.headers['Authorization'].slice(7);
+    const certificate = process.env.AUTH0_TIME_CERTIFICATE;
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, certificate, {
+        algorithms: ['RS256'],
+        audience: 'https://time.overattribution.com',
+        issuer: 'https://overattribution.auth0.com/'
+      }, (err, decoded) => {
+        if (err) reject(err);
+        else {
+          console.log('decoded:', decoded);
+          resolve({
+            statusCode: 200
+          });
+        }
+      });
+    });
+  }
+
+  getIftttServiceKey() {
+    return process.env.IFTTT_SERVICE_KEY;
   }
 
 }

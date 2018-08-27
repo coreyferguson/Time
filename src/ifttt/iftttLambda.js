@@ -12,6 +12,7 @@ class StatusLambda {
     this._secretsClient = options.secretsClient || secretsClient;
     this.userInfo = this.userInfo.bind(this);
     this.status = this.status.bind(this);
+    this.timerStart = this.timerStart.bind(this);
   }
 
   userInfo(event, context, callback) {
@@ -31,6 +32,20 @@ class StatusLambda {
   status(event, context, callback) {
     return this._configureSecrets().then(() => {
       return this._controller.status(event).then(response => {
+        if (response.body) response.body = JSON.stringify(response.body);
+        callback(null, response);
+      });
+    }).catch(error => {
+      if (error) console.info('error:', JSON.stringify(error));
+      if (error && error.stack)
+        console.info('error stack:', JSON.stringify(error.stack));
+      callback(error, error.response);
+    });
+  }
+
+  timerStart(event, context, callback) {
+    return this._configureSecrets().then(() => {
+      return this._controller.timerStart(event).then(response => {
         if (response.body) response.body = JSON.stringify(response.body);
         callback(null, response);
       });

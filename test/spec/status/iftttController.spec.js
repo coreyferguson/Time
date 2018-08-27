@@ -1,14 +1,14 @@
 
-const controller = require('../../../src/ifttt/statusController');
+const controller = require('../../../src/ifttt/iftttController');
 const { expect, sinon } = require('../../support/TestUtils');
 
-describe('StatusController', () => {
+describe('IftttController', () => {
 
   const sandbox = sinon.sandbox.create();
 
   beforeEach(() => {
     sandbox.stub(controller, 'getIftttServiceKey')
-      .returns(Promise.resolve('expected ifttt service key value'));
+      .returns('expected ifttt service key value');
   });
 
   afterEach(() => {
