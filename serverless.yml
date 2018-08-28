@@ -11,6 +11,7 @@ custom:
     includeModules:
       forceExclude:
         - aws-sdk
+  userTimerTableName: time-api-userTimer-${self:custom.stage}
 
 provider:
   name: aws
@@ -55,3 +56,23 @@ functions:
           method: POST
           path: ifttt/v1/actions/timer_start
           cors: true
+
+resources:
+  Resources:
+    userTimerTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userTimerTableName}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: timerId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: timerId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

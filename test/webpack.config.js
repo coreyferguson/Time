@@ -14,5 +14,8 @@ module.exports = {
       }]
     }]
   },
-  mode: 'development'
+  mode: 'development',
+  node: {
+    __dirname: false
+  }
 };
