@@ -5,7 +5,7 @@ const UserTimerRepository = require('../../../src/timer/dao/userTimerRepository'
 const UserTimerService = require('../../../src/timer/service/userTimerService').UserTimerService;
 const path = require('path');
 
-describe.only('userTimerRepository', () => {
+describe('userTimerService', () => {
 
   const facade = new LocalDynamoFacade(
     path.join(__dirname, '../../../serverless.yml')

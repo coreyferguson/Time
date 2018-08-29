@@ -2,7 +2,7 @@
 const config = require('../config');
 
 function corsFilter(data) {
-  console.info('CorsFilter.process');
+  console.info('corsFilter.process');
   return new Promise(resolve => {
     const event = data.request.event;
     const response = data.response;

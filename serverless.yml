@@ -20,6 +20,7 @@ provider:
   region: us-west-2
   environment:
     stage: ${self:custom.stage}
+    userTimerTableName: ${self:custom.userTimerTableName}
   environmentSecrets:
     AUTH0_TIME_CERTIFICATE: /time-api/${self:custom.stage}/AUTH0_TIME_CERTIFICATE
     IFTTT_SERVICE_KEY: /time-api/${self:custom.stage}/IFTTT_SERVICE_KEY
@@ -55,6 +56,13 @@ functions:
       - http:
           method: POST
           path: ifttt/v1/actions/timer_start
+          cors: true
+  getMyTimers:
+    handler: src/timer/controller/timerLambda.getMyTimers
+    events:
+      - http:
+          method: GET
+          path: /timers
           cors: true
 
 resources:
