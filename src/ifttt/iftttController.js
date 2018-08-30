@@ -1,6 +1,7 @@
 
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const userTimerService = require('../timer/service/userTimerService');
 
 class IftttController {
 
@@ -31,6 +32,7 @@ class IftttController {
 
   timerStart(event) {
     console.log(JSON.stringify(event));
+    const body = JSON.parse(event.body);
     const token = event.headers['Authorization'].slice(7);
     const certificate = process.env.AUTH0_TIME_CERTIFICATE;
     return new Promise((resolve, reject) => {
@@ -41,7 +43,32 @@ class IftttController {
       }, (err, decoded) => {
         if (err) reject(err);
         else {
-          console.log('decoded:', decoded);
+          const userId = decoded.sub;
+          const timerId = body.actionFields.timer_name;
+          userTimerService.startLog(userId, timerId);
+          resolve({
+            statusCode: 200
+          });
+        }
+      });
+    });
+  }
+
+  timerStop(event) {
+    const body = JSON.parse(event.body);
+    const token = event.headers['Authorization'].slice(7);
+    const certificate = process.env.AUTH0_TIME_CERTIFICATE;
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, certificate, {
+        algorithms: ['RS256'],
+        audience: 'https://time.overattribution.com',
+        issuer: 'https://overattribution.auth0.com/'
+      }, (err, decoded) => {
+        if (err) reject(err);
+        else {
+          const userId = decoded.sub;
+          const timerId = body.actionFields.timer_name;
+          userTimerService.stopLog(userId, timerId);
           resolve({
             statusCode: 200
           });

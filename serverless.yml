@@ -12,7 +12,7 @@ custom:
       forceExclude:
         - aws-sdk
   userTimerTableName: time-api-userTimer-${self:custom.stage}
-  userTimerLogTableName: time-api-userTimer-${self:custom.stage}
+  userTimerLogTableName: time-api-userTimerLog-${self:custom.stage}
 
 provider:
   name: aws
@@ -58,6 +58,13 @@ functions:
       - http:
           method: POST
           path: ifttt/v1/actions/timer_start
+          cors: true
+  timerStop:
+    handler: src/ifttt/iftttLambda.timerStop
+    events:
+      - http:
+          method: POST
+          path: ifttt/v1/actions/timer_stop
           cors: true
   getMyTimers:
     handler: src/timer/controller/timerLambda.getMyTimers
