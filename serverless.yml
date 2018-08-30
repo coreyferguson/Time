@@ -64,6 +64,13 @@ functions:
           method: GET
           path: /timers
           cors: true
+  saveTimer:
+    handler: src/timer/controller/timerLambda.saveTimer
+    events:
+      - http:
+          method: POST
+          path: /timers
+          cors: true
 
 resources:
   Resources:

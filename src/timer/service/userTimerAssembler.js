@@ -6,7 +6,7 @@ class UserTimerModelAssembler {
     const model = {};
     model.userId = entity.Item.userId.S;
     model.timerId = entity.Item.timerId.S;
-    if (entity.Item.timerName) model.timerName = entity.Item.timerName.S;
+    if (entity.Item.name) model.name = entity.Item.name.S;
     return model;
   }
 
@@ -15,7 +15,7 @@ class UserTimerModelAssembler {
     const entity = {};
     entity.userId = { S: model.userId };
     entity.timerId = { S: model.timerId };
-    if (model.timerName) entity.timerName = { S: model.timerName };
+    if (model.name) entity.name = { S: model.name };
     return entity;
   }
 

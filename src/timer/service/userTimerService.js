@@ -27,7 +27,7 @@ class UserTimerService {
   }
 
   save(model) {
-    console.info('UserTimerService.save(userId, timerId):', model.id, model.timerId);
+    console.info('UserTimerService.save(userId, timerId):', model.userId, model.timerId);
     const entity = this._userTimerAssembler.toEntity(model);
     return this._userTimerRepository.save(entity);
   }

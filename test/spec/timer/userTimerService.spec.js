@@ -47,13 +47,13 @@ describe('userTimerService', () => {
     return userTimerService.save({
       userId: 'userIdValue',
       timerId: 'timerIdValue',
-      timerName: 'Timer Name Value'
+      name: 'Timer Name Value'
     }).then(() => {
       return userTimerService.findOne('userIdValue', 'timerIdValue');
     }).then(userTimer => {
       expect(userTimer.userId).to.eql('userIdValue');
       expect(userTimer.timerId).to.eql('timerIdValue');
-      expect(userTimer.timerName).to.eql('Timer Name Value');
+      expect(userTimer.name).to.eql('Timer Name Value');
     }).then(() => {
       return userTimerService.delete('userIdValue', 'timerIdValue');
     }).then(() => {
