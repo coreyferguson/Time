@@ -12,6 +12,7 @@ custom:
       forceExclude:
         - aws-sdk
   userTimerTableName: time-api-userTimer-${self:custom.stage}
+  userTimerLogTableName: time-api-userTimer-${self:custom.stage}
 
 provider:
   name: aws
@@ -21,6 +22,7 @@ provider:
   environment:
     stage: ${self:custom.stage}
     userTimerTableName: ${self:custom.userTimerTableName}
+    userTimerLogTableName: ${self:custom.userTimerLogTableName}
   environmentSecrets:
     AUTH0_TIME_CERTIFICATE: /time-api/${self:custom.stage}/AUTH0_TIME_CERTIFICATE
     IFTTT_SERVICE_KEY: /time-api/${self:custom.stage}/IFTTT_SERVICE_KEY
@@ -87,6 +89,23 @@ resources:
           - AttributeName: userId
             KeyType: HASH
           - AttributeName: timerId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    userTimerLogTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userTimerLogTableName}
+        AttributeDefinitions:
+          - AttributeName: userTimerId
+            AttributeType: S
+          - AttributeName: time
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userTimerId
+            KeyType: HASH
+          - AttributeName: time
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1

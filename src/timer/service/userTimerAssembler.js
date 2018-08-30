@@ -1,5 +1,5 @@
 
-class UserTimerModelAssembler {
+class UserTimerAssembler {
 
   toModel(entity) {
     if (!entity) return null;
@@ -22,6 +22,6 @@ class UserTimerModelAssembler {
 }
 
 // export singleton
-const singleton = new UserTimerModelAssembler();
-singleton.UserTimerModelAssembler = UserTimerModelAssembler;
+const singleton = new UserTimerAssembler();
+singleton.UserTimerAssembler = UserTimerAssembler;
 module.exports = singleton;

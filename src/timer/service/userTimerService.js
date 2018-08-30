@@ -1,6 +1,8 @@
 
 const userTimerRepository = require('../dao/userTimerRepository');
 const userTimerAssembler = require('./userTimerAssembler');
+const userTimerLogRepository = require('../dao/userTimerLogRepository');
+const userTimerLogAssembler = require('./userTimerLogAssembler');
 
 class UserTimerService {
 
@@ -8,6 +10,8 @@ class UserTimerService {
     options = options || {};
     this._userTimerRepository = options.userTimerRepository || userTimerRepository;
     this._userTimerAssembler = options.userTimerAssembler || userTimerAssembler;
+    this._userTimerLogRepository = options.userTimerLogRepository || userTimerLogRepository;
+    this._userTimerLogAssembler = options.userTimerLogAssembler || userTimerLogAssembler;
   }
 
   findOne(userId, timerId) {
@@ -35,6 +39,42 @@ class UserTimerService {
   delete(userId, timerId) {
     console.info('UserTimerService.delete(userId, timerId): ', userId, timerId);
     return this._userTimerRepository.delete(userId, timerId);
+  }
+
+  startLog(userId, timerId) {
+    console.info('UserTimerService.startLog(userId, timerId): ', userId, timerId);
+    const entity = this._userTimerLogAssembler.toEntity({
+      userId,
+      timerId,
+      time: new Date(),
+      action: 'start'
+    });
+    return this._userTimerLogRepository.save(entity);
+  }
+
+  stopLog(userId, timerId) {
+    console.info('UserTimerService.stopLog(userId, timerId): ', userId, timerId);
+    const entity = this._userTimerLogAssembler.toEntity({
+      userId,
+      timerId,
+      time: new Date(),
+      action: 'stop'
+    });
+    return this._userTimerLogRepository.save(entity);
+  }
+
+  deleteLog(userId, timerId, time) {
+    console.info('UserTimerService.deleteLog(userId, timerId, time): ', userId, timerId, time);
+    return this._userTimerLogRepository.delete(userId, timerId, time.toISOString());
+  }
+
+  findLogs(userId, timerId) {
+    console.info('UserTimerService.findLogs(userId, timerId): ', userId, timerId);
+    return this._userTimerLogRepository.findByUserTimer(userId, timerId).then(result => {
+      return result.Items.map(entity => {
+        return this._userTimerLogAssembler.toModel({ Item: entity });
+      });
+    });
   }
 
 }
