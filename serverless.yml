@@ -73,6 +73,13 @@ functions:
           method: GET
           path: /timers
           cors: true
+  getMyTimerLogs:
+    handler: src/timer/controller/timerLambda.getMyTimerLogs
+    events:
+      - http:
+          method: GET
+          path: /timers/{timerId}/logs
+          cors: true
   saveTimer:
     handler: src/timer/controller/timerLambda.saveTimer
     events:
