@@ -52,14 +52,14 @@ functions:
           method: GET
           path: ifttt/v1/user/info
           cors: true
-  timerStart:
+  iftttStartTimer:
     handler: src/ifttt/iftttLambda.timerStart
     events:
       - http:
           method: POST
           path: ifttt/v1/actions/timer_start
           cors: true
-  timerStop:
+  iftttStopTimer:
     handler: src/ifttt/iftttLambda.timerStop
     events:
       - http:
@@ -86,6 +86,20 @@ functions:
       - http:
           method: POST
           path: /timers
+          cors: true
+  startTimer:
+    handler: src/timer/controller/timerLambda.startTimer
+    events:
+      - http:
+          method: POST
+          path: /timers/{timerId}/start
+          cors: true
+  stopTimer:
+    handler: src/timer/controller/timerLambda.stopTimer
+    events:
+      - http:
+          method: POST
+          path: /timers/{timerId}/stop
           cors: true
 
 resources:

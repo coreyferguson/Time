@@ -9,6 +9,8 @@ class TimerController {
     this.getMyTimers = this.getMyTimers.bind(this);
     this.getMyTimerLogs = this.getMyTimerLogs.bind(this);
     this.saveTimer = this.saveTimer.bind(this);
+    this.startTimer = this.startTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
   }
 
   getMyTimers(data) {
@@ -19,7 +21,6 @@ class TimerController {
   }
 
   getMyTimerLogs(data) {
-    console.log(JSON.stringify(data));
     const userId = data.auth.accessToken.sub;
     const timerId = data.request.event.pathParameters.timerId;
     return this._userTimerService.findLogs(userId, timerId).then(userTimerLogs => {
@@ -35,6 +36,22 @@ class TimerController {
     return this._userTimerService.save({
       userId, timerId, name: body.name
     }).then(() => {
+      data.response.statusCode = 200;
+    });
+  }
+
+  startTimer(data) {
+    const userId = data.auth.accessToken.sub;
+    const timerId = data.request.event.pathParameters.timerId;
+    return this._userTimerService.startLog(userId, timerId).then(() => {
+      data.response.statusCode = 200;
+    });
+  }
+
+  stopTimer(data) {
+    const userId = data.auth.accessToken.sub;
+    const timerId = data.request.event.pathParameters.timerId;
+    return this._userTimerService.stopLog(userId, timerId).then(() => {
       data.response.statusCode = 200;
     });
   }
