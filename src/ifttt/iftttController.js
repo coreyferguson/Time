@@ -41,14 +41,17 @@ class IftttController {
         audience: 'https://time.overattribution.com',
         issuer: 'https://overattribution.auth0.com/'
       }, (err, decoded) => {
-        if (err) reject(err);
-        else {
+        if (err) {
+          if (err.name === 'TokenExpiredError') {
+            resolve({ statusCode: 401 });
+          } else {
+            reject(err);
+          }
+        } else {
           const userId = decoded.sub;
           const timerId = body.actionFields.timer_name;
           userTimerService.startLog(userId, timerId);
-          resolve({
-            statusCode: 200
-          });
+          resolve({ statusCode: 200 });
         }
       });
     });
@@ -64,8 +67,13 @@ class IftttController {
         audience: 'https://time.overattribution.com',
         issuer: 'https://overattribution.auth0.com/'
       }, (err, decoded) => {
-        if (err) reject(err);
-        else {
+        if (err) {
+          if (err.name === 'TokenExpiredError') {
+            resolve({ statusCode: 401 });
+          } else {
+            reject(err);
+          }
+        } else {
           const userId = decoded.sub;
           const timerId = body.actionFields.timer_name;
           userTimerService.stopLog(userId, timerId);
