@@ -101,6 +101,21 @@ functions:
           method: POST
           path: /timers/{timerId}/stop
           cors: true
+  deleteTimerLog:
+    handler: src/timer/controller/timerLambda.deleteLog
+    events:
+      - http:
+          method: DELETE
+          path: /timers/{timerId}/logs
+          cors: true
+  saveTimerLog:
+    handler: src/timer/controller/timerLambda.saveLog
+    events:
+      - http:
+          method: POST
+          path: /timers/{timerId}/logs
+          cors: true
+
 
 resources:
   Resources:

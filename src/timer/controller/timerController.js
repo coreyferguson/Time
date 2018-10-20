@@ -11,6 +11,8 @@ class TimerController {
     this.saveTimer = this.saveTimer.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
+    this.deleteLog = this.deleteLog.bind(this);
+    this.saveLog = this.saveLog.bind(this);
   }
 
   getMyTimers(data) {
@@ -54,6 +56,24 @@ class TimerController {
     return this._userTimerService.stopLog(userId, timerId).then(() => {
       data.response.statusCode = 200;
     });
+  }
+
+  deleteLog(data) {
+    const userId = data.auth.accessToken.sub;
+    const timerId = data.request.event.pathParameters.timerId;
+    const body = JSON.parse(data.request.event.body);
+    const time = new Date(body.time);
+    return this._userTimerService.deleteLog(userId, timerId, time);
+  }
+
+  saveLog(data) {
+    const userId = data.auth.accessToken.sub;
+    const timerId = data.request.event.pathParameters.timerId;
+    const body = JSON.parse(data.request.event.body);
+    const time = new Date(body.time);
+    const action = body.action;
+    const model = { userId, timerId, time, action };
+    return this._userTimerService.saveLog(model);
   }
 
 }

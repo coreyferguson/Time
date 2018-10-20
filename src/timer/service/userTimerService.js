@@ -41,6 +41,12 @@ class UserTimerService {
     return this._userTimerRepository.delete(userId, timerId);
   }
 
+  saveLog(model) {
+    console.info('UserTimerService.saveLog(model):', JSON.stringify(model));
+    const entity = this._userTimerLogAssembler.toEntity(model);
+    return this._userTimerLogRepository.save(entity);
+  }
+
   startLog(userId, timerId) {
     console.info('UserTimerService.startLog(userId, timerId): ', userId, timerId);
     const entity = this._userTimerLogAssembler.toEntity({
