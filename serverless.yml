@@ -1,0 +1,85 @@
+
+service: time-api
+
+custom:
+
+  stage: ${opt:stage, self:provider.stage}
+  userTimerTableName: time-api-userTimer-${self:custom.stage}
+  userTimerLogTableName: time-api-userTimerLog-${self:custom.stage}
+
+provider:
+
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-west-2
+  environment:
+    stage: ${self:custom.stage}
+    userTimerTableName: ${self:custom.userTimerTableName}
+    userTimerLogTableName: ${self:custom.userTimerLogTableName}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-west-2:*:*"
+
+functions:
+
+  graphql:
+    handler: src/graphql/graphql.handler
+    events:
+      - http:
+          method: POST
+          path: /graphql
+          cors: true
+      - http:
+          method: GET
+          path: /graphql
+          cors: true
+
+resources:
+
+  Resources:
+
+    userTimerTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.userTimerTableName}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: timerId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: timerId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    userTimerLogTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.userTimerLogTableName}
+        AttributeDefinitions:
+          - AttributeName: userTimerId
+            AttributeType: S
+          - AttributeName: time
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userTimerId
+            KeyType: HASH
+          - AttributeName: time
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

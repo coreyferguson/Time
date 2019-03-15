@@ -1,0 +1,44 @@
+{
+  "name": "time-api",
+  "version": "1.0.0",
+  "description": "Free time tracker. Use for tracking study time, work project time, or anything else you want.",
+  "private": true,
+  "scripts": {
+    "debug": "stage=test ./node_modules/.bin/mocha --recursive --watch --inspect --debug-brk test/spec",
+    "deploy": "node_modules/.bin/sls deploy",
+    "test": "stage=test ./node_modules/.bin/mocha --recursive",
+    "watch": "stage=test ./node_modules/.bin/mocha --recursive --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coreyferguson/time-api.git"
+  },
+  "keywords": [
+    "time",
+    "tracker",
+    "track",
+    "ifttt",
+    "api",
+    "node",
+    "javascript"
+  ],
+  "author": "Corey Ferguson <corey.t.ferguson@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coreyferguson/time-api/issues"
+  },
+  "homepage": "https://github.com/coreyferguson/time-api#readme",
+  "dependencies": {
+    "apollo-server-lambda": "^2.4.8",
+    "graphql": "^14.1.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "serverless": "^1.38.0",
+    "serverless-secrets": "^3.0.0-beta.12",
+    "sinon": "^7.2.7",
+    "sinon-chai": "^3.3.0"
+  }
+}
