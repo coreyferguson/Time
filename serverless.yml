@@ -27,6 +27,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:us-west-2:*:*"
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+      Resource: "arn:aws:ssm:us-west-2:863138142000:parameter/time-api/*"
 
 functions:
 

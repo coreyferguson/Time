@@ -2,12 +2,14 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
 const logger = require('../logger');
 const uuid = require('uuid');
+const secrets = require('../secrets');
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
   type Query {
     hello: String,
-    name: String
+    name: String,
+    secret: String
   }
 `;
 
@@ -28,6 +30,17 @@ const resolvers = {
       return timeout(Math.ceil(Math.random()*10)*1000).then(() => {
         timer.stop();
         return 'Captain Awesome';
+      });
+    },
+    secret: () => {
+      const timer = logger.startTimer('graphql.resolvers.Query.secret', uuid());
+      return secrets.load(['TEST_SECRET']).then(values => {
+        timer.stop();
+        return JSON.stringify(values);
+      }).catch(err => {
+        timer.stop(false);
+        console.info(err);
+        throw new Error('Unexpected exception occurred. Please try again later.')
       });
     }
   }
