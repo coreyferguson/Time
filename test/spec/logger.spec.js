@@ -38,12 +38,12 @@ describe('logger', () => {
   it('stop timer with appropriate logs', () => {
     const spy = sandbox.stub(console, 'info');
     const timer = logger.startTimer('loggerTest', 'test-tid');
-    return timeout(10).then(() => {
+    return timeout(20).then(() => {
       timer.stop();
       const message = spy.getCall(1).args[0];
       const res = message.match(/"time_taken":(\d+)/);
       const timeTaken = parseInt(res[1], 10);
-      expect(timeTaken).to.be.closeTo(10, 2);
+      expect(timeTaken).to.be.closeTo(20, 5);
       expect(message, 'incorrect log message')
         .to.match(/"name":"loggerTest"/);
       expect(message, 'incorrect log message')

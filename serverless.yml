@@ -10,7 +10,7 @@ custom:
 provider:
 
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   stage: dev
   region: us-west-2
   environment:
@@ -35,7 +35,7 @@ provider:
 functions:
 
   graphql:
-    handler: src/graphql/graphql.handler
+    handler: src/graphql/graphqlHandler.handler
     events:
       - http:
           method: POST
