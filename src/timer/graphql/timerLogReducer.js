@@ -1,7 +1,7 @@
 
 module.exports = timerLog => {
   return {
-    time: timerLog.time,
+    time: timerLog.time.toISOString(),
     action: timerLog.action
   };
 };

@@ -96,28 +96,28 @@ describe('userTimerService', () => {
     });
   });
 
-  it('start log', () => {
-    return userTimerService.startLog('userIdValue', 'timerIdValue').then(() => {
-      return userTimerService.findLogs('userIdValue', 'timerIdValue');
-    }).then(results => {
-      expect(results.length).to.be.equal(1);
-      const log = results[0];
-      expect(log.action).to.equal('start');
-      expect(log.timerId).to.equal('timerIdValue');
-      expect(log.userId).to.equal('userIdValue');
-      expect(log.time).to.not.be.null;
-      return log.time;
-    }).then(time => {
-      return userTimerService.deleteLog('userIdValue', 'timerIdValue', time);
-    });
+  it('start log', async () => {
+    const userId = 'userIdValue';
+    const timerId = 'timerIdValue';
+    await userTimerService.startLog(userId, timerId);
+    const results = await userTimerService.findLogs({ userId, timerId });
+    expect(results.data.length).to.be.equal(1);
+    const log = results.data[0];
+    expect(log.action).to.equal('start');
+    expect(log.timerId).to.equal('timerIdValue');
+    expect(log.userId).to.equal('userIdValue');
+    expect(log.time).to.not.be.null;
+    await userTimerService.deleteLog('userIdValue', 'timerIdValue', log.time);
   });
 
   it('start and stop log', async () => {
-    await userTimerService.startLog('userIdValue', 'timerIdValue');
-    await userTimerService.stopLog('userIdValue', 'timerIdValue');
-    const results = await userTimerService.findLogs('userIdValue', 'timerIdValue');
-    expect(results.length).to.be.equal(2);
-    const [start, stop] = results;
+    const userId = 'userIdValue';
+    const timerId = 'timerIdValue';
+    await userTimerService.startLog(userId, timerId);
+    await userTimerService.stopLog(userId, timerId);
+    const results = await userTimerService.findLogs({ userId, timerId });
+    expect(results.data.length).to.be.equal(2);
+    const [start, stop] = results.data;
     expect(start.userId).to.equal('userIdValue');
     expect(start.timerId).to.equal('timerIdValue');
     expect(start.timer).to.not.be.null;
@@ -127,8 +127,38 @@ describe('userTimerService', () => {
     expect(stop.timer).to.not.be.null;
     expect(stop.action).to.equal('stop');
     expect(start.time).to.be.lessThan(stop.time);
-    return Promise.all(results.map(result => {
-      return userTimerService.deleteLog('userIdValue', 'timerIdValue', result.time)
+    return Promise.all(results.data.map(log => {
+      return userTimerService.deleteLog('userIdValue', 'timerIdValue', log.time)
+    }));
+  });
+
+  it('logs should be paginated', async () => {
+    const startAndStopTimer = async () => {
+      await userTimerService.startLog('userIdValue', 'timerIdValue');
+      await userTimerService.stopLog('userIdValue', 'timerIdValue');
+    };
+    await startAndStopTimer();
+    await startAndStopTimer();
+    const page1 = await userTimerService.findLogs({
+      userId: 'userIdValue',
+      timerId: 'timerIdValue',
+      pageSize: 2
+    });
+    expect(page1.data.length).to.be.equal(2);
+    expect(page1.cursor).to.not.be.undefined;
+    expect(page1.hasAfter).to.be.true;
+    const page2 = await userTimerService.findLogs({ cursor: page1.cursor });
+    expect(page2.data.length).to.be.equal(2);
+    expect(page2.hasAfter).to.be.true;
+    expect(page1.data[1].time).to.be.lessThan(page2.data[0].time);
+    const page3 = await userTimerService.findLogs({ cursor: page2.cursor });
+    expect(page3.data.length).to.equal(0);
+    expect(page3.hasAfter).to.be.false;
+    await Promise.all(page1.data.map(log => {
+      return userTimerService.deleteLog('userIdValue', 'timerIdValue', log.time)
+    }));
+    await Promise.all(page2.data.map(log => {
+      return userTimerService.deleteLog('userIdValue', 'timerIdValue', log.time)
     }));
   });
 

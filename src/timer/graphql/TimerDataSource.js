@@ -14,8 +14,12 @@ class TimerDataSource extends DataSource {
     return await this._userTimerService.findByUserId(userId);
   }
 
-  async findLogs(userId, timerId) {
-    return await this._userTimerService.findLogs(userId, timerId);
+  async findOne(userId, timerId) {
+    return await this._userTimerService.findOne(userId, timerId);
+  }
+
+  async findLogs(options) {
+    return await this._userTimerService.findLogs(options);
   }
 
 }

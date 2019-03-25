@@ -10,7 +10,11 @@ class UserTimerLogRepository {
     this._userTimerLogTableName = options.userTimerLogTableName || process.env.userTimerLogTableName;
   }
 
-  findByUserTimer(userId, timerId) {
+  findByUserTimer(options) {
+    options = options || {};
+    let { userId, timerId, pageSize, after } = options;
+    pageSize = pageSize || 100;
+    // TODO: Refactor to use logger.js
     console.info('UserTimerLogRepository.findByUserTimer(userId, timerId)', userId, timerId);
     return new Promise((resolve, reject) => {
       this._dynamodb.query({
@@ -18,7 +22,9 @@ class UserTimerLogRepository {
         KeyConditionExpression: 'userTimerId = :userTimerId',
         ExpressionAttributeValues: {
           ':userTimerId': { S: `${userId};${timerId}` }
-        }
+        },
+        Limit: pageSize,
+        ExclusiveStartKey: after
       }, (err, data) => {
         if (err) reject(err);
         else resolve(data);
@@ -27,6 +33,7 @@ class UserTimerLogRepository {
   }
 
   save(userTimerLog) {
+    // TODO: Refactor to use logger.js
     console.info(
       'UserTimerLogRepository.save(usertimerId, time)',
       userTimerLog.userTimerId.S,
@@ -44,6 +51,7 @@ class UserTimerLogRepository {
   }
 
   delete(userId, timerId, time) {
+    // TODO: Refactor to use logger.js
     console.info(
       'UserTimerLogRepository.delete(userId, timerId, time)',
       userId,
