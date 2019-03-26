@@ -2,4 +2,9 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
 const createApolloServer = require('./createApolloServer');
 
-exports.handler = createApolloServer(ApolloServer, gql).createHandler();
+exports.handler = createApolloServer(ApolloServer, gql).createHandler({
+  cors: {
+    origin: true,
+    credentials: true
+  }
+});
