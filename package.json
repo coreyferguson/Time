@@ -4,6 +4,7 @@
   "description": "Free time tracker. Use for tracking study time, work project time, or anything else you want.",
   "private": true,
   "scripts": {
+    "start": "node test/local/graphql",
     "debug": "stage=test ./node_modules/.bin/mocha --recursive --watch --inspect --debug-brk test/spec",
     "deploy": "node_modules/.bin/sls deploy",
     "test": "stage=test ./node_modules/.bin/mocha --recursive test/spec/**/*.js",
