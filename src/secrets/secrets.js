@@ -2,6 +2,8 @@
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'us-west-2' });
 
+const logger = require('../logger');
+
 class Secrets {
 
   constructor(options) {
@@ -10,10 +12,14 @@ class Secrets {
     this._inProgress = new Map();
     this._env = options.env || process.env;
     this._ssm = options.ssm || new AWS.SSM();
+    this._logger = options.logger || logger;
   }
 
   load(names) {
+    const timer = this._logger.startTimer('secrets.load');
+    // fetch parameters that have never been fetched before
     const neverFetched = [];
+    // re-use promises for previously requested parameters
     const inProgress = [];
     names.forEach(name => {
       const isInCache = this._cache.has(name);
@@ -24,19 +30,16 @@ class Secrets {
     const awsPromise = this._fetchFromAWS(neverFetched);
     neverFetched.forEach(name => this._inProgress.set(name, awsPromise));
     return awsPromise.then(params => {
-      // cache params from aws
-      for (let param of params) {
-        const key = param.Name.replace(`/time-api/${this._env.stage}/`, '');
-        this._cache.set(key, param.Value);
-        this._inProgress.delete(key);
-      };
+      this._cacheAWSParams(params);
     }).then(() => {
       return Promise.all(inProgress);
     }).then(() => {
-      // return values from cache
-      return names.map(name => {
-        return { name, value: this._cache.get(name) }
-      });
+      const result = this._toMap(names);
+      timer.stop(true);
+      return result;
+    }).catch(err => {
+      timer.stop(false);
+      throw err;
     });
   }
 
@@ -46,6 +49,7 @@ class Secrets {
    */
   _fetchFromAWS(names) {
     if (names.length === 0) return Promise.resolve([]);
+    this._logger.info('Retrieving secrets from AWS SSM', names);
     return new Promise((resolve, reject) => {
       this._ssm.getParameters({
         Names: names.map(name => `/time-api/${this._env.stage}/${name}`),
@@ -65,6 +69,26 @@ class Secrets {
         resolve(data.Parameters);
       });
     });
+  }
+
+  /**
+   * Convert given secret names into a Map<secretName, secretValue>.
+   */
+  _toMap(names) {
+    const result = new Map();
+    for (let name of names) result.set(name, this._cache.get(name));
+    return result;
+  }
+
+  /**
+   * Cache the given parameters from AWS and stop tracking existing promises.
+   */
+  _cacheAWSParams(params) {
+    for (let param of params) {
+      const key = param.Name.replace(`/time-api/${this._env.stage}/`, '');
+      this._cache.set(key, param.Value);
+      this._inProgress.delete(key);
+    };
   }
 
 }

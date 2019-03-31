@@ -4,6 +4,7 @@ const LocalDynamoFacade = require('local-dynamo-facade');
 const UserTimerRepository = require('../../src/timer/dao/userTimerRepository').UserTimerRepository;
 const UserTimerLogRepository = require('../../src/timer/dao/userTimerLogRepository').UserTimerLogRepository;
 const UserTimerService = require('../../src/timer/service/userTimerService').UserTimerService;
+const logger = require('../support/mock/mockLogger');
 const path = require('path');
 
 describe('userTimerService', () => {
@@ -12,7 +13,7 @@ describe('userTimerService', () => {
     path.join(__dirname, '../../serverless.yml')
   );
 
-  const sandbox = sinon.sandbox.create();
+  const sandbox = sinon.createSandbox();
   let userTimerService, userTimerRepository, userTimerLogRepository;
 
   before(function() {
@@ -20,14 +21,16 @@ describe('userTimerService', () => {
     const dynamodb = facade.start();
     userTimerRepository = new UserTimerRepository({
       dynamodb,
-      userTimerTableName: 'userTimer-test'
+      userTimerTableName: 'userTimer-test',
+      logger
     });
     userTimerLogRepository = new UserTimerLogRepository({
       dynamodb,
-      userTimerLogTableName: 'userTimerLog-test'
+      userTimerLogTableName: 'userTimerLog-test',
+      logger
     });
     userTimerService = new UserTimerService({
-      userTimerRepository, userTimerLogRepository
+      userTimerRepository, userTimerLogRepository, logger
     });
     return Promise.all([
       facade.createTable('userTimerTable', 'userTimer-test'),
@@ -40,7 +43,6 @@ describe('userTimerService', () => {
   });
 
   beforeEach(() => {
-    sandbox.stub(console, 'info');
   });
 
   afterEach(() => {

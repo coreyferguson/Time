@@ -23,6 +23,6 @@ Use secret in client code:
 ```javascript
 const secrets = require('../secrets');
 secrets.load(['TEST_SECRET']).then(values => {
-  // values = [ { key: 'TEST_SECRET', value: 'test-secret-value-123' } ]
+  values.get('TEST_SECRET') // => 'test-secret-value-123'
 });
 ```

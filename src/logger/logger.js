@@ -1,11 +1,30 @@
 
 class Logger {
 
+  tid(tid) {
+    this._tid = tid;
+  }
+
+  info(message, props) {
+    // Kibana has missing logs when props are of inconsistent types
+    if (typeof props === 'string') props = { stringValue: props };
+    else if (typeof props === 'number') props = { numberValue: props };
+    else if (typeof props === 'boolean') props = { booleanValue: props };
+    console.info(JSON.stringify({
+      tid: this._tid,
+      logger: {
+        level: 'info',
+        message,
+        props: JSON.stringify(props)
+      }
+    }));
+  }
+
   /**
    * @param {string} name unique name for this operation
    */
   startTimer(name, tid) {
-    return new Timer(name, tid);
+    return new Timer(name, tid || this._tid);
   }
 
 }
@@ -53,9 +72,9 @@ class Timer {
             stop: this._stop.getTime(),
             time_taken: timeTaken
           },
-          resiliency: success,
-          tid: this._tid
-        }
+          resiliency: success
+        },
+        tid: this._tid
       };
       console.info(JSON.stringify(payload));
       this._running = false;
