@@ -17,6 +17,7 @@ class UserTimerLogRepository {
     options = options || {};
     let { userId, timerId, pageSize, after } = options;
     pageSize = pageSize || 100;
+    const timer = this._logger.startTimer('UserTimerLogRepository.findByUserTimer');
     this._logger.info('UserTimerLogRepository.findByUserTimer', { userId, timerId });
     return new Promise((resolve, reject) => {
       this._dynamodb.query({
@@ -28,8 +29,13 @@ class UserTimerLogRepository {
         Limit: pageSize,
         ExclusiveStartKey: after
       }, (err, data) => {
-        if (err) reject(err);
-        else resolve(data);
+        if (err) {
+          timer.stop(false);
+          reject(err);
+        } else {
+          timer.stop(true);
+          resolve(data);
+        }
       });
     });
   }
@@ -37,6 +43,7 @@ class UserTimerLogRepository {
   save(userTimerLog) {
     const userTimerId = userTimerLog.userTimerId.S;
     const time = userTimerLog.time.S;
+    const timer = this._logger.startTimer('UserTimerLogRepository.save');
     this._logger.info('UserTimerLogRepository.save', { userTimerId, time });
     return new Promise((resolve, reject) => {
       this._dynamodb.putItem({
@@ -44,13 +51,19 @@ class UserTimerLogRepository {
         Item: userTimerLog,
         ReturnConsumedCapacity: 'TOTAL'
       }, (err, data) => {
-        if (err) reject(err);
-        else resolve(data);
+        if (err) {
+          timer.stop(false);
+          reject(err);
+        } else {
+          timer.stop(true);
+          resolve(data);
+        }
       });
     });
   }
 
   delete(userId, timerId, time) {
+    const timer = this._logger.startTimer('UserTimerLogRepository.delete');
     this._logger.info('UserTimerLogRepository.delete', { userId, timerId, time });
     return new Promise((resolve, reject) => {
       this._dynamodb.deleteItem({
@@ -60,8 +73,13 @@ class UserTimerLogRepository {
           time: { S: time }
         }
       }, (err, data) => {
-        if (err) reject(err);
-        else resolve(data);
+        if (err) {
+          timer.stop(false);
+          reject(err);
+        } else {
+          timer.stop(true);
+          resolve(data);
+        }
       });
     });
   }
